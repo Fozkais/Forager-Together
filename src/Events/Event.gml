@@ -1,5 +1,15 @@
 #define OnStep
     UI_MenuStep();
+    
+    // Auto-disconnect when the player returns to the main menu
+    if (instance_exists(objTransition)) {
+        if (objTransition.target == rmInputSelect) {
+            // Only trigger if we are currently in a network session
+            if (global.is_host || global.is_connected) {
+                NetDisconnect();
+            }
+        }
+    }
 
 #define OnDrawGUI
     UI_MenuDraw();
@@ -12,12 +22,12 @@
             if (global.is_host) {
                 global.net_socket = async_load[? "socket"];
                 global.is_connected = true;
-                Trace("Un PenPal s'est connecté !");
+                Trace("A player has joined the session!");
             }
             break;
 
         case network_type_disconnect:
-            Trace("Partenaire déconnecté.");
+            Trace("Network connection lost.");
             NetDisconnect();
             break;
 
