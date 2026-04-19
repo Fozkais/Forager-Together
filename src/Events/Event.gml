@@ -1,6 +1,8 @@
 #define OnStep
     UI_MenuStep();
     
+    PlayerSyncSend();
+
     // Auto-disconnect when the player returns to the main menu
     if (instance_exists(objTransition)) {
         if (objTransition.target == rmInputSelect) {
@@ -13,6 +15,9 @@
 
 #define OnDrawGUI
     UI_MenuDraw();
+
+#define OnDrawEnd
+    PlayerRenderPartner();
 
 #define OnNetworkAsync(async_load)
     var _type = async_load[? "type"];

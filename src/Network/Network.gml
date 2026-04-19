@@ -96,6 +96,9 @@
 	try {
         var _cmd = buffer_read(buffer, buffer_u8);
         switch (_cmd) {
+            case NetCmd.PLAYER_DATA:
+                PlayerSyncReceive(buffer);
+                break;
             case NetCmd.PING:
                 Trace("Ping received from player.");
                 break;
@@ -106,7 +109,7 @@
                 break;
 
             case NetCmd.DISCONNECT:
-                Trace("Player requested a clean disconnect.");
+                Trace("Player as disconnected.");
                 NetDisconnect();
                 break;
                 
