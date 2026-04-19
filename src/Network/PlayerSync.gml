@@ -3,9 +3,14 @@
 
     var _packet = buffer_create(1, buffer_grow, 1);
     buffer_write(_packet, buffer_u8, NetCmd.PLAYER_DATA);
-    
 	buffer_write(_packet, buffer_string, global.player_name);
-    // Write local player data
+    
+	// Tool Data
+	var _tool = ToolSelected();
+    var _toolID = (string_digits(string(_tool)) != "") ? real(_tool) : -4;
+    buffer_write(_packet, buffer_s16, _toolID);
+
+	// Movement data
     buffer_write(_packet, buffer_u8, objPlayer.sprite_index);
     buffer_write(_packet, buffer_u8, floor(objPlayer.image_index));
     buffer_write(_packet, buffer_s8, objPlayer.facing);
@@ -19,6 +24,8 @@
 #define PlayerSyncReceive(buffer)
     // Read and update global state
 	global.partner_name        = buffer_read(buffer, buffer_string);
+
+	global.partner_hold        = buffer_read(buffer, buffer_s16); // Read tool 
 
     global.partner_sprite      = buffer_read(buffer, buffer_u8);
     global.partner_image_index = buffer_read(buffer, buffer_u8);

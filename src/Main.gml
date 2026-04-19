@@ -4,6 +4,7 @@
     // Player Identity
     global.player_name = "Player"; // Nom par défaut
     global.partner_name = "";
+    global.partner_hold = -4;
 
     // Partner State Initialization
     global.partner_x = -4;

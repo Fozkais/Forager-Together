@@ -54,37 +54,34 @@
     }
 
 #define NetDisconnect
-    // 1. Notify partner before closing
+    // 1. Notify partner
     if (global.is_connected && global.net_socket != -4) {
         var _packet = buffer_create(1, buffer_grow, 1);
         buffer_write(_packet, buffer_u8, NetCmd.DISCONNECT);
-        
         network_send_packet(global.net_socket, _packet, buffer_tell(_packet));
         buffer_delete(_packet);
-        
-        global.is_connected = false;
-        Trace("Sent disconnect signal to partner.");
+        Trace("Sent disconnect signal.");
     }
 
-    // 2. Shut down Host server
-    if (global.is_host && global.net_server != -4) {
+    // 2. Clear state FIRST to prevent loops
+    global.is_connected = false;
+    
+    // 3. Destroy Server
+    if (global.net_server != -4) {
         network_destroy(global.net_server);
         global.net_server = -4;
-        global.is_host = false;
-        Trace("Server stopped.");
+        Trace("Server destroyed.");
     }
     
-    // 3. Clean up Connection socket
+    // 4. Destroy Socket
     if (global.net_socket != -4) {
         network_destroy(global.net_socket);
         global.net_socket = -4;
     }
 
-    // Reset UI state
-    global.is_connected = false;
     global.is_host = false;
     global.menu_state = "MAIN";
-    Trace("Session cleanup complete.");
+    Trace("Clean disconnect completed.");
 
 #define NetSendPacket(buffer)
     if (global.net_socket != -4) {

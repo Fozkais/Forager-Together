@@ -1,12 +1,12 @@
 #define OnStep
     UI_MenuStep();
     
-    PlayerSyncSend();
+   if (global.is_connected) {
+        PlayerSyncSend();
+    }
 
-    // Auto-disconnect when the player returns to the main menu
     if (instance_exists(objTransition)) {
         if (objTransition.target == rmInputSelect) {
-            // Only trigger if we are currently in a network session
             if (global.is_host || global.is_connected) {
                 NetDisconnect();
             }
